@@ -4,4 +4,4 @@
     "checkJs": true
   },
   "include": ["*.js", "../bundle.d.ts"]
-}
+} 
