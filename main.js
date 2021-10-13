@@ -1,121 +1,108 @@
-title = "Rising Rope";
+title = "Itsy Spider";
 
 description = `
-    [Tap]
- Grapple onto 
-   a point
-  
-Don't let them
-   get past!
+[Hold] 
+to go up
+
+[Release]
+to go down
 `;
 
-characters = [   //Custom Sprites
+characters = [
   `
-  y
- yby
-ybyby
- yby
-  y
+  ppp
+ ppppp
+ p p p
+ p p p
   `
   ,
   `
-  pppp
-  pppp
-  pppp
-  pppp
+   ppp
+  ppppp
+  pppppp
+  ppppp
+   ppp
   `
 ];
 
-const G = {   //Data we can call later
-  WIDTH: 120,
-  HEIGHT: 180
-}
-
 options = {
-  theme:'shapeDark',
-  //seed: 53, //9 is good, 46 is ok, 53 is good
-  //isPlayingBgm: true,
-  viewSize: {x: G.WIDTH, y: G.HEIGHT},
+  theme: "dark",
   isPlayingBgm: true,
-  seed: 17
+  isReplayEnabled: true
 };
 
-
-let hooks
-let player
-let nextHookTicks;
-let hooklaneSpeeds
-const hooklaneCount = 4;
-const hooklaneWidth = 20;
+let droplets;
+let nextDropletTicks;
+let p, v
+let nextAnchorDist;
+let scr;
+let laneSpeeds
+const laneCount = 4;
+const laneWidth = 20;
+let speedMultiplier
 
 function update() {
   if (!ticks) {
-    player = vec(0, 0); 
-    hooks = []
-    nextHookTicks = 0;
-    hooklaneSpeeds = times(hooklaneCount, () => 1);
-    
+    //Burrowed from Zarton
+    droplets = [];
+    nextDropletTicks = 0;
+    laneSpeeds = times(laneCount, () => 1);
+    p = vec(5, 50);
+    speedMultiplier = 0.5
   }
-
-  nextHookTicks--;
-  if (nextHookTicks < 0) {
+  nextDropletTicks--;
+  if (nextDropletTicks < 0) {
     //play("select");
-    const hooklaneIndex = rndi(hooklaneCount);
-    hooks.push({
-      pos: vec(rnd(10, 110), 0),
-      //Messes with the speed
+    const laneIndex = rndi(laneCount);
+    droplets.push({
+      pos: vec(103, calcY(laneIndex)),
       vx: -rnd(1, sqrt(difficulty)) * 0.5,
-      hooklaneIndex,
+      laneIndex,
     });
-    nextHookTicks = rnd(1, 60) / difficulty;
+    nextDropletTicks = rnd(30, 50) / difficulty;
   }
-  color("cyan")
-  let playerChar = box(player, 5, 5)
-
   
-  remove(hooks, (e) => {
-    e.pos.y -= e.vx * hooklaneSpeeds[e.hooklaneIndex] * difficulty;
-    color("black")
-    const hook = char("a", e.pos.x, e.pos.y)
-    if(input.isJustPressed){
-      if((input.pos.x > e.pos.x - 4  && input.pos.x < e.pos.x + 4) && (input.pos.y > e.pos.y - 4  && input.pos.y < e.pos.y + 4)) {
-        color("cyan")
-        //Spawn a particle at the last player location
-        particle(
-          player.x, // x coordinate
-          player.y, // y coordinate
-          10, // The number of particles
-          1.5, // The speed of the particles
-          PI/2, // The emitting angle
-          PI/4  // The emitting width
-        );
-        line(player, input.pos)
-        player = vec(e.pos.x, e.pos.y)
-        addScore(1 + player.y/10, e.pos)
-        color("yellow")
-        particle(e.pos, 10, 0.8, 1, 10);
-        play("coin");
-        return true
-      }
-    }
-    if(e.pos.y > G.HEIGHT){
-      play("explosion")
+  color("black")
+  rect(3, 0, 5, 100)
+  color("cyan")
+  char('a', p)
+  color("blue")
+  rect(0, 0, 100, 20)
+  color("blue")
+  rect(0, 85, 100, 20)
+  
+  
+  
+
+  if (input.isPressed && p.y > 22) {
+    p.y -= 1
+  }
+  else if (!input.isPressed && p.y < 84){
+    p.y += 1
+  }
+
+  remove(droplets, (e) => {
+    e.pos.x += e.vx * laneSpeeds[e.laneIndex];
+    color("light_cyan")
+    if (char("b", e.pos).isColliding.char.a) {
+      play("powerUp");
+      particle(e.pos);
       end()
+    }
+    
+    
+    if(char("b", e.pos).isColliding.rect.black){
+      score += 0.1
     }
   });
 
-  if((player.y >= hooks.y - 5 || player.y <= hooks.y + 5) && (player.x >= hooks.x - 15 && player.x <= hooks.x + 15)){
-    player.y -= hooks.vx * hooklaneSpeeds[hooks.hooklaneIndex];
+  if(score > 100){
+    speedMultiplier = 1.5
   }
-  else{
-    player.y += 2 * difficulty;
+  function calcY(i) {
+    return i * laneWidth + laneWidth / 2 + 12;
   }
-  if(player.y > G.HEIGHT){
-    play("explosion")
-    end()
-  }
-  function calcX(i) {
-    return i * hooklaneWidth + hooklaneWidth / 2 + 12;
-  }
+  
+  
   
 }
