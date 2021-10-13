@@ -1,12 +1,12 @@
 title = "Rising Rope";
 
 description = `
-     [Tap]
-  Grapple onto 
-    a point
+    [Tap]
+ Grapple onto 
+   a point
   
-  Don't let them
-     get past!
+Don't let them
+   get past!
 `;
 
 characters = [   //Custom Sprites
