@@ -32,7 +32,7 @@ const G = {   //Data we can call later
 }
 
 options = {
-  theme:'pixel',
+  theme:'shapeDark',
   //seed: 53, //9 is good, 46 is ok, 53 is good
   //isPlayingBgm: true,
   viewSize: {x: G.WIDTH, y: G.HEIGHT},
@@ -69,12 +69,9 @@ function update() {
     });
     nextHookTicks = rnd(1, 60) / difficulty;
   }
-
   color("cyan")
   let playerChar = box(player, 5, 5)
-  if(input.isPressed){
-    line(player, input.pos)
-  }
+
   
   remove(hooks, (e) => {
     e.pos.y -= e.vx * hooklaneSpeeds[e.hooklaneIndex] * difficulty;
@@ -82,8 +79,21 @@ function update() {
     const hook = char("a", e.pos.x, e.pos.y)
     if(input.isJustPressed){
       if((input.pos.x > e.pos.x - 4  && input.pos.x < e.pos.x + 4) && (input.pos.y > e.pos.y - 4  && input.pos.y < e.pos.y + 4)) {
+        color("cyan")
+        //Spawn a particle at the last player location
+        particle(
+          player.x, // x coordinate
+          player.y, // y coordinate
+          10, // The number of particles
+          1.5, // The speed of the particles
+          PI/2, // The emitting angle
+          PI/4  // The emitting width
+        );
+        line(player, input.pos)
         player = vec(e.pos.x, e.pos.y)
         addScore(1 + player.y/10, e.pos)
+        color("yellow")
+        particle(e.pos, 10, 0.8, 1, 10);
         play("hit");
         return true
       }
@@ -98,7 +108,7 @@ function update() {
     player.y -= hooks.vx * hooklaneSpeeds[hooks.hooklaneIndex];
   }
   else{
-    player.y += 3 * difficulty;
+    player.y += 2 * difficulty;
   }
   if(player.y > G.HEIGHT){
     play("explosion")
