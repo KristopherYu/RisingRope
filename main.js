@@ -1,7 +1,7 @@
 title = "Star Catcher";
 
 description = `
-    [Tap]
+    [Click]
  Grapple onto 
    a Start
   
