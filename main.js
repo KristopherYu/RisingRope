@@ -2,20 +2,29 @@ title = "Rising Rope";
 
 description = `
 [Hold]
-  Grapple onto a point
+  Hook to a point
 `;
 
 characters = [   //Custom Sprites
   `
-   b
-  byb
-   b
+ b
+byb
+ b
   `
+  ,
+`
+pppppp
+pyppyp
+pyppyp
+pppppp
+pp  pp
+pp  pp
+`
 ];
 
 const G = {   //Data we can call later
-  WIDTH: 90,
-  HEIGHT: 150
+  WIDTH: 120,
+  HEIGHT: 180
 }
 
 options = {
@@ -35,7 +44,22 @@ options = {
 */
 let hooks
 
+/**
+ * @typedef {{
+ * pos: Vector
+ * }} Player
+ */
+let player
+
 function update() {
-  if (!ticks) {
+  if (!ticks) { //Initialize Values/Sprites/Characters
+
+    player = {
+      pos: vec(G.WIDTH / 2, G.HEIGHT/2)
+    }
   }
+    //player
+    color("black");
+    char("b", player.pos);
+
 }
