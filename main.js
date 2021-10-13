@@ -7,9 +7,11 @@ description = `
 
 characters = [   //Custom Sprites
   `
- b
-byb
- b
+  y
+ yby
+ybyby
+ yby
+  y
   `
   ,
 `
