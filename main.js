@@ -12,6 +12,13 @@ characters = [   //Custom Sprites
   byb
    b
   `
+  ,
+  `
+  pppp
+  pppp
+  pppp
+  pppp
+  `
 ];
 
 const G = {   //Data we can call later
@@ -26,16 +33,7 @@ options = {
   viewSize: {x: G.WIDTH, y: G.HEIGHT}
 };
 
-/**
- * @typedef {{
- * pos: Vector,
- * vx: number,
- * hooklaneIndex: number
- * }} Hook
- */
-/**
- * @type { Hook [] } 
-*/
+
 let hooks
 let player
 let nextHookTicks;
@@ -45,7 +43,7 @@ const hooklaneWidth = 20;
 
 function update() {
   if (!ticks) {
-    let player = vec(50, 80); 
+    player = vec(0, 0); 
     hooks = []
     nextHookTicks = 0;
     hooklaneSpeeds = times(hooklaneCount, () => 1);
@@ -57,7 +55,7 @@ function update() {
     //play("select");
     const hooklaneIndex = rndi(hooklaneCount);
     hooks.push({
-      pos: vec(rnd(10, 110), 0),
+      pos: vec(rnd(10, 110), 70),
       //Messes with the speed
       vx: -rnd(1, sqrt(difficulty)) * 0.5,
       hooklaneIndex,
@@ -66,7 +64,7 @@ function update() {
   }
 
   color("cyan")
-  rect(0, 0, 5, 5)
+  rect(player, 5, 5)
   if(input.isPressed){
     line(player, input.pos)
   }
@@ -74,18 +72,24 @@ function update() {
   remove(hooks, (e) => {
     e.pos.y -= e.vx * hooklaneSpeeds[e.hooklaneIndex];
     const hook = char("a", e.pos.x, e.pos.y - 48)
-    color("light_cyan")
+    color("purple")
     const platform = box(e.pos, 30, 10)
     if(input.isJustPressed){
       if((input.pos.x > e.pos.x - 3  && input.pos.x < e.pos.x + 3) && (input.pos.y > e.pos.y - 51  && input.pos.y < e.pos.y - 45)) {
+        
         player = vec(e.pos.x, e.pos.y - 48)
         
       }
-    }  
+    
+    }
+    
     
   });
   
-  
+  player.y += 2;
+  if(player.y > G.HEIGHT){
+    end()
+  }
   
   function calcX(i) {
     return i * hooklaneWidth + hooklaneWidth / 2 + 12;
