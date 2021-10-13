@@ -35,7 +35,9 @@ options = {
   theme:'pixel',
   //seed: 53, //9 is good, 46 is ok, 53 is good
   //isPlayingBgm: true,
-  viewSize: {x: G.WIDTH, y: G.HEIGHT}
+  viewSize: {x: G.WIDTH, y: G.HEIGHT},
+  isPlayingBgm: true,
+  seed: 2
 };
 
 
@@ -82,10 +84,12 @@ function update() {
       if((input.pos.x > e.pos.x - 4  && input.pos.x < e.pos.x + 4) && (input.pos.y > e.pos.y - 4  && input.pos.y < e.pos.y + 4)) {
         player = vec(e.pos.x, e.pos.y)
         addScore(1 + player.y/10, e.pos)
+        play("hit");
         return true
       }
     }
     if(e.pos.y > G.HEIGHT){
+      play("explosion")
       end()
     }
   });
@@ -97,6 +101,7 @@ function update() {
     player.y += 3 * difficulty;
   }
   if(player.y > G.HEIGHT){
+    play("explosion")
     end()
   }
   function calcX(i) {
