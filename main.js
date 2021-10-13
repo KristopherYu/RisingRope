@@ -37,7 +37,7 @@ options = {
   //isPlayingBgm: true,
   viewSize: {x: G.WIDTH, y: G.HEIGHT},
   isPlayingBgm: true,
-  seed: 2
+  seed: 17
 };
 
 
@@ -94,7 +94,7 @@ function update() {
         addScore(1 + player.y/10, e.pos)
         color("yellow")
         particle(e.pos, 10, 0.8, 1, 10);
-        play("hit");
+        play("coin");
         return true
       }
     }
