@@ -1,9 +1,12 @@
 title = "Rising Rope";
 
 description = `
-    [Hold]
+     [Tap]
   Grapple onto 
     a point
+  
+  Don't let them
+     get past!
 `;
 
 characters = [   //Custom Sprites
@@ -57,42 +60,45 @@ function update() {
     //play("select");
     const hooklaneIndex = rndi(hooklaneCount);
     hooks.push({
-      pos: vec(rnd(10, 110), 70),
+      pos: vec(rnd(10, 110), 0),
       //Messes with the speed
       vx: -rnd(1, sqrt(difficulty)) * 0.5,
       hooklaneIndex,
     });
-    nextHookTicks = rnd(99, 100) / difficulty;
+    nextHookTicks = rnd(1, 60) / difficulty;
   }
 
   color("cyan")
-  rect(player, 5, 5)
+  let playerChar = box(player, 5, 5)
   if(input.isPressed){
     line(player, input.pos)
   }
   
   remove(hooks, (e) => {
-    e.pos.y -= e.vx * hooklaneSpeeds[e.hooklaneIndex];
-    const hook = char("a", e.pos.x, e.pos.y - 48)
-    color("purple")
-    const platform = box(e.pos, 30, 10)
+    e.pos.y -= e.vx * hooklaneSpeeds[e.hooklaneIndex] * difficulty;
+    color("black")
+    const hook = char("a", e.pos.x, e.pos.y)
     if(input.isJustPressed){
-      if((input.pos.x > e.pos.x - 3  && input.pos.x < e.pos.x + 3) && (input.pos.y > e.pos.y - 51  && input.pos.y < e.pos.y - 45)) {
-        
-        player = vec(e.pos.x, e.pos.y - 48)
-        
+      if((input.pos.x > e.pos.x - 4  && input.pos.x < e.pos.x + 4) && (input.pos.y > e.pos.y - 4  && input.pos.y < e.pos.y + 4)) {
+        player = vec(e.pos.x, e.pos.y)
+        addScore(1 + player.y/10, e.pos)
+        return true
       }
-    
     }
-    
-    
+    if(e.pos.y > G.HEIGHT){
+      end()
+    }
   });
-  
-  player.y += 2;
+
+  if((player.y >= hooks.y - 5 || player.y <= hooks.y + 5) && (player.x >= hooks.x - 15 && player.x <= hooks.x + 15)){
+    player.y -= hooks.vx * hooklaneSpeeds[hooks.hooklaneIndex];
+  }
+  else{
+    player.y += 3 * difficulty;
+  }
   if(player.y > G.HEIGHT){
     end()
   }
-  
   function calcX(i) {
     return i * hooklaneWidth + hooklaneWidth / 2 + 12;
   }
